@@ -29,6 +29,8 @@ public interface ExStudentMapper {
 
     List<Object> getMultipleResultMap();
 
+    List<Object> getAutoMapperMultipleResultMap();
+
     List<StudentDetail> getOriginAutoMapping(@Param("userName") String userName);
 
     List<StudentDetail> getAutoMapperWithXmlSql();

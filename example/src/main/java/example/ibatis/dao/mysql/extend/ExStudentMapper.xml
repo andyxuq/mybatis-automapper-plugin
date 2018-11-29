@@ -38,6 +38,14 @@
         select s.id, s.user_id, s.class_name from ie_student s;
     </select>
 
+
+    <resultMap id="UserAutoMap" type="example.ibatis.dao.mysql.model.UserDo"></resultMap>
+    <resultMap id="StudentAutoMap" type="example.ibatis.dao.mysql.model.StudentDo"></resultMap>
+    <select id="getAutoMapperMultipleResultMap" parameterType="map" resultMap="UserAutoMap,StudentAutoMap">
+        select u.id as user_id, u.user_age, u.user_name from ie_user u;
+        select s.id, s.user_id, s.class_name from ie_student s;
+    </select>
+
     <resultMap id="StudentAutoResultMap" type="example.ibatis.dao.model.StudentDetail" autoMapping="true"></resultMap>
     <select id="getOriginAutoMapping" parameterType="map" resultMap="StudentAutoResultMap">
         select s.id, s.create_time, s.modified_time, s.class_name,

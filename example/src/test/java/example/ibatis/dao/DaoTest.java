@@ -110,6 +110,22 @@ public class DaoTest extends SpringBootBaseTest {
         }
     }
 
+    @Test
+    public void testGetAutoMapperMultipleResultMap() {
+        List<Object> result = exStudentMapper.getAutoMapperMultipleResultMap();
+        assertNotNull(result);
+        assertTrue(result instanceof List);
+
+        List list = (List)result;
+        assertEquals(nameArray.length, list.size());
+
+        for (Object o : list) {
+            assertTrue(o instanceof List);
+            List subList = (List)o;
+            assertEquals(nameArray.length, subList.size());
+        }
+    }
+
 //    test on condition: disable ResultSetHandlerInteceptor
 //    @Test
     public void testOriginAutoMapping() {
