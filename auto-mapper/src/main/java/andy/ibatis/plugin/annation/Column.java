@@ -18,7 +18,7 @@ public @interface Column {
     String name();
 
     /** column type */
-    JdbcType jdbcType();
+    JdbcType jdbcType() default JdbcType.NULL;
 
     /** is primary key */
     boolean isId() default false;
