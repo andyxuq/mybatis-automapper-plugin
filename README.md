@@ -218,7 +218,7 @@ public final class MappedStatement {
 ### 插件的工作原理
 
 知道了mybatis查询是通过对应语句的MappedStatement对象中ResultMaps来封装结果的，那么在我们不写ResultMap时，我们只需要自己去解析封装结果集的java对象，然后生成ResultMap，
-再将生成的ResultMap设置到MappedStatement中即可
+再将生成的ResultMap设置到MappedStatement中即可，具体源码可以查看: [ResultSetHandlerInteceptor](https://github.com/andyxuq/mybatis-automapper-plugin/blob/master/auto-mapper/src/main/java/andy/ibatis/plugin/ResultSetHandlerInteceptor.java)
 
 
 
