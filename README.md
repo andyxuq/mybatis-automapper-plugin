@@ -209,7 +209,7 @@ mybatis在做查询语句的结果集映射的时候，就会根据MappedStateme
 ```java
 public final class MappedStatement {
   ....
-  //这里ResultMaps是list，因为jdbc驱动允许我们用一个statement一次执行多条查询语句，每条查询语句会对应一个ResultSet，一个ResultSet需要对应一个ResultMap
+  //这里ResultMaps是list，因为jdbc驱动允许我们用一个statement一次执行多条查询语句（分号分隔），每条查询语句会对应一个ResultSet，一个ResultSet需要对应一个ResultMap
   private List<ResultMap> resultMaps;
   ....
 }
@@ -217,9 +217,20 @@ public final class MappedStatement {
 
 ### 插件的工作原理
 
-知道了mybatis查询是通过对应语句的MappedStatement对象中ResultMaps来封装结果的，那么在我们不写ResultMap时，我们只需要自己去解析封装结果集的java对象，然后生成ResultMap，
+知道了mybatis查询是通过对应语句的MappedStatement对象中ResultMaps来封装结果的，那么在我们不写ResultMap时，只需要自己去解析封装结果集的java对象，然后生成ResultMap，
 再将生成的ResultMap设置到MappedStatement中即可，具体源码可以查看: [ResultSetHandlerInteceptor](https://github.com/andyxuq/mybatis-automapper-plugin/blob/master/auto-mapper/src/main/java/andy/ibatis/plugin/ResultSetHandlerInteceptor.java)
 
+新增注解说明：
+* @Column: 标记被注解的属性为数据库的列（若不加Column注解，插件会自动将驼峰属性名转化成下划线的形式表示列名，并添加到ResultMapping中）
+    - name: 列名
+    - jdbcType: 该列对应的数据类型
+    - isId: 是否是主键ID（默认false:不是），对于每一个对象，请务必配置一个主键ID，就像我们用xml配置resultMap一样
+* @Many: 表示一对多关系，即ResultMap中的collection
+    - idProperty: many对象里，表示id的属性名字是什么，默认"id"
+    - idColumn: many对象里，表示主键的列名是什么，若不填写，则必须用@Column注解标注many对象里的主键信息
+* @One: 表示一对一关系，即ResultMap中的association
+    - idProperty: one对象里，表示id的属性名字是什么，默认"id"
+    - idColumn: one对象里，表示主键的列名是什么，若不填写，则必须用@Column注解标注one对象里的主键信息  
 
 
 

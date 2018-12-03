@@ -16,5 +16,5 @@ public @interface Many {
     String idProperty() default "id";
 
     /** id column name */
-    String idColumn();
+    String idColumn() default "";
 }
