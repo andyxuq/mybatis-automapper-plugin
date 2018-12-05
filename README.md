@@ -225,6 +225,7 @@ public final class MappedStatement {
     - name: 列名
     - jdbcType: 该列对应的数据类型
     - isId: 是否是主键ID（默认false:不是），对于每一个对象，请务必配置一个主键ID，就像我们用xml配置resultMap一样
+    - typeHandler: 同Xml配置中元素ResultMap的typeHandler一样，自定义属性值获取时的类型处理器
 * @Many: 表示一对多关系，即ResultMap中的collection
     - idProperty: many对象里，表示id的属性名字是什么，默认"id"
     - idColumn: many对象里，表示主键的列名是什么，若不填写，则必须用@Column注解标注many对象里的主键信息
