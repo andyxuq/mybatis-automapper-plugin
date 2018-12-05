@@ -1,6 +1,7 @@
 package example.ibatis.dao;
 
 import example.ibatis.dao.model.StudentDetail;
+import example.ibatis.dao.model.StudentSubject;
 import example.ibatis.dao.mysql.dao.StudentDoMapper;
 import example.ibatis.dao.mysql.dao.StudentSubjectDoMapper;
 import example.ibatis.dao.mysql.dao.UserDoMapper;
@@ -17,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import static org.junit.Assert.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -67,12 +70,12 @@ public class DaoTest extends SpringBootBaseTest {
             studentDoMapper.insertSelective(studentDo);
 
             for (int i = 0; i < subjectSize; i++) { //add 5 records
-                StudentSubjectDo subjectDo = new StudentSubjectDo();
-                subjectDo.setStudentId(studentDo.getId());
-                subjectDo.setSubjectName(studentDo.getId() + ":" + getRandomString(10));
-                subjectDo.setSubjectTeacher(studentDo.getId() + ":" + getRandomString(10));
-                studentSubjectDoMapper.insertSelective(subjectDo);
-                subjectDo.setId(null);
+                Map<String, Object> param = new HashMap<>();
+                param.put("student_id", studentDo.getId());
+                param.put("subject_name", studentDo.getId() + ":name:" + getRandomString(10));
+                param.put("subject_teacher", studentDo.getId() + ":teacher:" + getRandomString(10));
+
+                exStudentMapper.insertStudentSubject(param);
             }
         }
     }
@@ -126,8 +129,7 @@ public class DaoTest extends SpringBootBaseTest {
         }
     }
 
-//    test on condition: disable ResultSetHandlerInteceptor
-//    @Test
+    @Test
     public void testOriginAutoMapping() {
         Object result = exStudentMapper.getOriginAutoMapping(nameArray[0]);
 
@@ -148,6 +150,28 @@ public class DaoTest extends SpringBootBaseTest {
         for (StudentDetail studentDetail : detailList) {
             assertNotNull(studentDetail.getUser());
             assertEquals(subjectSize, studentDetail.getSubjectList().size());
+        }
+    }
+
+    @Test
+    public void testGetAllSubject() {
+        List<StudentSubjectDo> subjectList = exStudentMapper.getAllSubject();
+
+        assertNotNull(subjectList);
+        for (StudentSubjectDo subjectDo : subjectList) {
+            assertTrue(subjectDo.getSubjectName().contains(":"));
+            assertTrue(subjectDo.getSubjectTeacher().contains(":"));
+        }
+    }
+
+    @Test
+    public void testGetAutoMapperAllSubject() {
+        List<StudentSubject> subjectList = exStudentMapper.getAutoMapperAllSubject();
+
+        assertNotNull(subjectList);
+        for (StudentSubject subjectDo : subjectList) {
+            assertTrue(subjectDo.getSubjectName().contains(":"));
+            assertTrue(subjectDo.getSubjectTeacher().contains(":"));
         }
     }
 

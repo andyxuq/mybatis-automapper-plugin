@@ -1,9 +1,12 @@
 package example.ibatis.dao.mysql.extend;
 
 import example.ibatis.dao.model.StudentDetail;
+import example.ibatis.dao.model.StudentSubject;
+import example.ibatis.dao.mysql.model.StudentSubjectDo;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: andyxu
@@ -34,4 +37,12 @@ public interface ExStudentMapper {
     List<StudentDetail> getOriginAutoMapping(@Param("userName") String userName);
 
     List<StudentDetail> getAutoMapperWithXmlSql();
+
+    int insertStudentSubject(Map<String, Object> param);
+
+    List<StudentSubjectDo> getAllSubject();
+
+    @Select("select * from ie_student_subject")
+    List<StudentSubject> getAutoMapperAllSubject();
+
 }

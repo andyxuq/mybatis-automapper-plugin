@@ -4,6 +4,7 @@ import andy.ibatis.plugin.annation.Column;
 import andy.ibatis.plugin.annation.Many;
 import andy.ibatis.plugin.annation.One;
 import org.apache.ibatis.type.JdbcType;
+import org.apache.ibatis.type.TypeHandler;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -43,6 +44,7 @@ public class TableMeta {
             Class<?> javaType = field.getType();
             String columnName = null;
             JdbcType jdbcType = null;
+            Class<? extends TypeHandler<?>> typeHandler = null;
             boolean isPrimaryKey = false;
 
             if (one != null || null != many) {
@@ -53,6 +55,7 @@ public class TableMeta {
             } else if (null != column) {
                 columnName = column.name();
                 jdbcType = column.jdbcType();
+                typeHandler = column.typeHandler();
                 if (column.isId()) {
                     isPrimaryKey = true;
                 }
@@ -61,7 +64,7 @@ public class TableMeta {
                 columnName = deCamelPropertyName(propertyName);
             }
 
-            ColumnEntry entry = new ColumnEntry(propertyName, columnName, javaType, jdbcType, isPrimaryKey);
+            ColumnEntry entry = new ColumnEntry(propertyName, columnName, javaType, jdbcType, isPrimaryKey, typeHandler);
             meta.entryList.add(entry);
         });
         return meta;
@@ -169,14 +172,17 @@ public class TableMeta {
 
         private JdbcType jdbcType;
 
+        private Class<? extends TypeHandler<?>> typeHandler;
+
         private boolean isPrimaryKey;
 
-        public ColumnEntry(String propertyName, String columnName, Class<?> javaType, JdbcType jdbcType, boolean isPrimaryKey) {
+        public ColumnEntry(String propertyName, String columnName, Class<?> javaType, JdbcType jdbcType, boolean isPrimaryKey, Class<? extends TypeHandler<?>> typeHandler) {
             this.propertyName = propertyName;
             this.columnName = columnName;
             this.javaType = javaType;
             this.jdbcType = jdbcType;
             this.isPrimaryKey = isPrimaryKey;
+            this.typeHandler = typeHandler;
         }
 
         public String getPropertyName() {
@@ -199,6 +205,9 @@ public class TableMeta {
             return isPrimaryKey;
         }
 
+        public Class<? extends TypeHandler<?>> getTypeHandler() {
+            return typeHandler;
+        }
     }
 
 }

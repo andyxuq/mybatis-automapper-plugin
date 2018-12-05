@@ -1,6 +1,8 @@
 package andy.ibatis.plugin.annation;
 
 import org.apache.ibatis.type.JdbcType;
+import org.apache.ibatis.type.TypeHandler;
+import org.apache.ibatis.type.UnknownTypeHandler;
 
 import java.lang.annotation.*;
 
@@ -14,7 +16,7 @@ import java.lang.annotation.*;
 @Target(ElementType.FIELD)
 public @interface Column {
 
-    /** column name */
+    /** db column name */
     String name();
 
     /** column type */
@@ -22,4 +24,7 @@ public @interface Column {
 
     /** is primary key */
     boolean isId() default false;
+
+    /** type handler */
+    Class<? extends TypeHandler<?>> typeHandler() default UnknownTypeHandler.class;
 }

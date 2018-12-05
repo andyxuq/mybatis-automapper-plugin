@@ -8,6 +8,9 @@ import org.apache.ibatis.mapping.*;
 import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.TypeAliasRegistry;
+import org.apache.ibatis.type.TypeHandler;
+import org.apache.ibatis.type.TypeHandlerRegistry;
+import org.apache.ibatis.type.UnknownTypeHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +82,9 @@ public class ResultSetHandlerInteceptor implements Interceptor {
 
     private boolean needAutoMapper(ResultMap resultMap) {
         Collection<Class<?>> simpleTypes = ALIAS_REGISTRY.getTypeAliases().values();
-        if (simpleTypes.contains(resultMap.getType())) {
+        if (resultMap.getAutoMapping() != null && resultMap.getAutoMapping()) {
+            return Boolean.FALSE;
+        } else if (simpleTypes.contains(resultMap.getType())) {
             return Boolean.FALSE;
         } else if (resultMap.getResultMappings() == null || resultMap.getResultMappings().isEmpty()) {
             return Boolean.TRUE;
@@ -142,10 +147,13 @@ public class ResultSetHandlerInteceptor implements Interceptor {
             if (entry.isPrimaryKey()) {
                 flags.add(ResultFlag.ID);
             }
+
+            TypeHandler<?> typeHandler = resolveTypeHandler(entry.getJavaType(), entry.getTypeHandler(), builderAssistant);
             ResultMapping resultMapping = new ResultMapping.Builder(builderAssistant.getConfiguration(), propertyName, columnName, entry.getJavaType())
                     .flags(flags)
                     .jdbcType(entry.getJdbcType())
                     .nestedResultMapId(nestResultMapId)
+                    .typeHandler(typeHandler)
                     .build();
             mappingList.add(resultMapping);
         });
@@ -180,5 +188,18 @@ public class ResultSetHandlerInteceptor implements Interceptor {
             logger.error("replace resultMap value for statement fail", e);
             throw e;
         }
+    }
+
+    protected TypeHandler<?> resolveTypeHandler(Class<?> javaType, Class<? extends TypeHandler<?>> typeHandlerType, MapperBuilderAssistant builderAssistant) {
+        if (typeHandlerType == null || typeHandlerType == UnknownTypeHandler.class) {
+            return null;
+        }
+
+        TypeHandlerRegistry typeHandlerRegistry = builderAssistant.getConfiguration().getTypeHandlerRegistry();
+        TypeHandler<?> handler = typeHandlerRegistry.getMappingTypeHandler(typeHandlerType);
+        if (handler == null) {
+            handler = typeHandlerRegistry.getInstance(javaType, typeHandlerType);
+        }
+        return handler;
     }
 }

@@ -65,4 +65,26 @@
          where s.user_id = u.id and s.id = ss.student_id
     </select>
 
+
+    <insert id="insertStudentSubject" parameterType="map" keyProperty="id" useGeneratedKeys="true">
+        insert into ie_student_subject (student_id, subject_name, subject_teacher)
+        values
+        (
+          #{student_id},
+          #{subject_name, typeHandler=example.ibatis.dao.handler.ExampleTypeHandler},
+          #{subject_teacher, typeHandler=example.ibatis.dao.handler.ExampleTypeHandler}
+        )
+    </insert>
+
+    <resultMap id="SubjectResultMapWithHandler" type="example.ibatis.dao.mysql.model.StudentSubjectDo" >
+        <id column="id" property="id" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="modified_time" property="modifiedTime" jdbcType="TIMESTAMP" />
+        <result column="student_id" property="studentId" jdbcType="INTEGER" />
+        <result column="subject_name" property="subjectName" typeHandler="example.ibatis.dao.handler.ExampleTypeHandler"/>
+        <result column="subject_teacher" property="subjectTeacher" typeHandler="example.ibatis.dao.handler.ExampleTypeHandler" />
+    </resultMap>
+    <select id="getAllSubject" parameterType="map" resultMap="SubjectResultMapWithHandler">
+      select * from ie_student_subject
+    </select>
 </mapper>
