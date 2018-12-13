@@ -144,7 +144,7 @@ public interface ExStudentMapper {
 ### mybatis对查询语句的解析
 
 mybatis解析SQL语句的来源有两个地方，一是来自xml，一是来自Mapper接口里面的注解（方法上的@Select注解等）
-* xml文件的解析入口是SqlSessionFactoryBean，遍历解析我们在mapperLocations中设置的xml资源，关键代码如下：
+* 在与Spring整合时，xml文件的解析入口是SqlSessionFactoryBean，遍历解析我们在mapperLocations中设置的xml资源，关键代码如下：
 ```java
   //SqlSessionFactoryBean实现了Spring的InitializingBean
   @Override
@@ -179,7 +179,7 @@ mybatis解析SQL语句的来源有两个地方，一是来自xml，一是来自M
     return this.sqlSessionFactoryBuilder.build(configuration);
   }
 ```
-* Mapper接口的解析（这里的Mapper接口是指没有关联xml文件的纯Mapper接口），解析代码入口在MapperFactoryBean，关键代码如下：
+* 与Spring整合时，Mapper接口的解析（这里的Mapper接口是指没有关联xml文件的纯Mapper接口），解析代码入口在MapperFactoryBean，关键代码如下：
 ```java
   /**
    * {@inheritDoc}
